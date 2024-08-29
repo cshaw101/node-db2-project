@@ -4,6 +4,7 @@ return knex.schema.createTable('cars', tbl => {
   tbl.increments('id');
   tbl.text('vin', 50).unique().notNullable();
   tbl.text('make',30).notNullable();
+  tbl.text('model', 30).notNullable();
   tbl.integer('mileage').notNullable();
   tbl.text('title');
   tbl.text('transmission');

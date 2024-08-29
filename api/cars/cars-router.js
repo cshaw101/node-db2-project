@@ -1,20 +1,14 @@
 const router = require('express').Router()
 const Cars = require('./cars-model.js')
 
-router.get('/', async (req, res) => {
-try {
-const cars = await Cars.getAll()
-if (!cars) {
-    return res.status(404).json({})
-}else {
-    res.status(200).json(cars)
-}
-}catch(err) {
-res.status(404).json({
-    message: 'get did not work'
-})
-}
-})
+router.get('/', async (req, res, next) => {
+    try {
+      const cars = await Cars.getAll();
+      res.status(200).json(cars);
+    } catch (err) {
+      next(err); 
+    }
+  });
 
 router.get('/:id', async (req, res) => {
 try {
@@ -25,12 +19,23 @@ next(err)
 }
 })
 
-router.post('/', (req, res) => {
-res.json('post is working')
-})
+router.post('/', async (req, res, next) => {
+    try {
+      const carData = req.body;
+  
+      const { vin, make, mileage } = carData;
+      if (!vin || !make || !mileage) {
+        return res.status(400).json({ message: 'VIN, make, and mileage are required.' });
+      }
+      const car = await Cars.create(carData);
+
+      res.status(201).json(car);
+    } catch (err) {
+      next(err);  
+    }
+  });
 
 router.use((err, req, res, next) => { //eslint-disable-line
-    // DO YOUR MAGIC
     res.status(err.status|| 500).json({
       message: err.message,
     })
