@@ -1,7 +1,20 @@
 const router = require('express').Router()
+const Cars = require('./cars-model.js')
 
-router.get('/', (req, res) => {
-res.json('get is working')
+router.get('/', async (req, res) => {
+try {
+const cars = await Cars.getAll()
+if (!cars) {
+    return res.status(404).json({message:'this endpoint needs work'})
+}else {
+    res.status(200).json(cars)
+}
+
+}catch(err) {
+res.status(404).json({
+    message: 'get did not work'
+})
+}
 })
 
 router.get('/:id', (req, res) => {
