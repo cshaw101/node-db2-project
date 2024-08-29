@@ -5,11 +5,10 @@ router.get('/', async (req, res) => {
 try {
 const cars = await Cars.getAll()
 if (!cars) {
-    return res.status(404).json({message:'this endpoint needs work'})
+    return res.status(404).json({})
 }else {
     res.status(200).json(cars)
 }
-
 }catch(err) {
 res.status(404).json({
     message: 'get did not work'
@@ -17,15 +16,25 @@ res.status(404).json({
 }
 })
 
-router.get('/:id', (req, res) => {
-res.json('get :id is working')
+router.get('/:id', async (req, res) => {
+try {
+    const car = await Cars.getById(req.params.id)
+    res.json(car)
+}catch(err) {
+next(err)
+}
 })
 
 router.post('/', (req, res) => {
 res.json('post is working')
 })
 
-
+router.use((err, req, res, next) => { //eslint-disable-line
+    // DO YOUR MAGIC
+    res.status(err.status|| 500).json({
+      message: err.message,
+    })
+  })
 
 
 
