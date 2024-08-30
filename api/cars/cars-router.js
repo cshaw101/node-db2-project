@@ -20,7 +20,7 @@ next(err)
 }
 })
 
-router.post('/', md.checkCarPayload, async (req, res, next) => {
+router.post('/', md.checkCarPayload, md.checkVinNumberUnique,md.checkVinNumberValid, async (req, res, next) => {
   try {
     const carData = req.body;
     const car = await Cars.create(carData);
